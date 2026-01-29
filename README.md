@@ -1,1 +1,1 @@
-# ai-multimodal-qa
+# DocuChat AI
