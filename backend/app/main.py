@@ -9,42 +9,45 @@ from app.db.base import Base
 from app.db import models
 
 from app.middleware.error_handler import app_exception_handler
+from app.middleware.api_key import api_key_middleware
 from app.errors.app_errors import AppError
 
-# Load environment variables
+# Load env
 env_path = Path(__file__).resolve().parents[1] / ".env"
 load_dotenv(dotenv_path=env_path)
 
-# App init
 app = FastAPI(title="DocuChat AI Multimodal Q&A API")
 
-# Database sync
 DB_SYNC = os.getenv("DB_SYNC", "false").lower() == "true"
 
-# CORS Middleware
+# CORS
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "")
+allowed_origins = [o.strip() for o in ALLOWED_ORIGINS.split(",") if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# API key protection
+app.middleware("http")(api_key_middleware)
 
 @app.on_event("startup")
 def on_startup():
     if DB_SYNC:
         Base.metadata.create_all(bind=engine)
 
-# Global error handling
+# Error handling
 app.add_exception_handler(AppError, app_exception_handler)
 app.add_exception_handler(Exception, app_exception_handler)
 
-# Health check
 @app.get("/health")
 def health():
     return {"status": "ok"}
 
-# Routers
 from app.routers import auth, upload, process, chat
 
 app.include_router(auth.router)
