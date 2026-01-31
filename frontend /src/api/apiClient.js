@@ -1,3 +1,5 @@
+import { triggerLogout } from "./authBridge";
+
 const API_KEY = import.meta.env.VITE_API_KEY;
 
 export async function apiClient(
@@ -20,10 +22,26 @@ export async function apiClient(
   const response = await fetch(url, {
     method,
     headers: finalHeaders,
-    body: body instanceof FormData ? body : body ? JSON.stringify(body) : null,
+    body:
+      body instanceof FormData
+        ? body
+        : body
+        ? JSON.stringify(body)
+        : null,
   });
 
-  const data = await response.json();
+  let data = null;
+
+  try {
+    data = await response.json();
+  } catch {
+    data = {};
+  }
+
+  if (response.status === 401) {
+    triggerLogout();
+    throw new Error("Session expired. Please login again.");
+  }
 
   if (!response.ok) {
     throw new Error(data.detail || data.error || "Request failed");
