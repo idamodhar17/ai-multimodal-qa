@@ -161,7 +161,6 @@ const FileUpload = ({ onUploadSuccess }) => {
             onDrop={handleDrop}
           >
             <div className="relative mb-4">
-              <Cloud className="h-12 w-12 mx-auto text-muted-foreground/50" />
               <div className="absolute inset-0 flex items-center justify-center">
                 <Upload className="h-6 w-6 text-primary" />
               </div>
