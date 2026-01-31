@@ -1,25 +1,32 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { apiService } from "@/api/apiService";
+import { registerLogout } from "@/api/authBridge";
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
-    const token = localStorage.getItem("auth_token");
+    const storedToken = localStorage.getItem("auth_token");
 
-    if (storedUser && token) {
+    if (storedUser && storedToken) {
       try {
         setUser(JSON.parse(storedUser));
+        setToken(storedToken);
       } catch {
-        localStorage.removeItem("user");
-        localStorage.removeItem("auth_token");
+        clearSession();
       }
     }
+
     setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
+    registerLogout(logout);
   }, []);
 
   const login = async (email, password) => {
@@ -29,6 +36,8 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("user", JSON.stringify(res.user));
 
     setUser(res.user);
+    setToken(res.access_token);
+
     return res.user;
   };
 
@@ -42,17 +51,23 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
+    clearSession();
+  };
+
+  const clearSession = () => {
     localStorage.removeItem("auth_token");
     localStorage.removeItem("user");
     setUser(null);
+    setToken(null);
   };
 
   return (
     <AuthContext.Provider
       value={{
         user,
+        token,
         isLoading,
-        isAuthenticated: !!user,
+        isAuthenticated: !!user && !!token,
         login,
         signup,
         logout,

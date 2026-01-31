@@ -85,12 +85,16 @@ def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
 ):
     if credentials is None:
-        raise UnauthorizedError("Authorization header missing")
+        raise UnauthorizedError("AUTH_HEADER_MISSING")
 
     token = credentials.credentials
-    response = supabase.auth.get_user(token)
+
+    try:
+        response = supabase.auth.get_user(token)
+    except Exception:
+        raise UnauthorizedError("TOKEN_EXPIRED")
 
     if response.user is None:
-        raise UnauthorizedError("Invalid or expired token")
+        raise UnauthorizedError("TOKEN_INVALID")
 
     return response.user

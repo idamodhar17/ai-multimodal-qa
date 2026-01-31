@@ -1,9 +1,17 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { useAuth } from "./AuthContext";
 
 const FileContext = createContext(null);
 
 export const FileProvider = ({ children }) => {
+  const { isAuthenticated } = useAuth();
   const [uploadedFile, setUploadedFile] = useState(null);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      clearFile();
+    }
+  }, [isAuthenticated]);
 
   const setFile = (file, apiResponse) => {
     const url = URL.createObjectURL(file);
@@ -18,10 +26,12 @@ export const FileProvider = ({ children }) => {
   };
 
   const clearFile = () => {
-    if (uploadedFile?.url) {
-      URL.revokeObjectURL(uploadedFile.url);
-    }
-    setUploadedFile(null);
+    setUploadedFile((prev) => {
+      if (prev?.url) {
+        URL.revokeObjectURL(prev.url);
+      }
+      return null;
+    });
   };
 
   return (
