@@ -1,4 +1,4 @@
-import { triggerLogout } from "./authBridge";
+import { triggerLogout } from "./apiBridge";
 
 const API_KEY = import.meta.env.VITE_API_KEY;
 

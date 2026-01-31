@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { apiService } from "@/api/apiService";
-import { registerLogout } from "@/api/authBridge";
+import { registerLogout } from "../api/apiBridge";
 
 const AuthContext = createContext(null);
 
