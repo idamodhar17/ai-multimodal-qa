@@ -7,8 +7,18 @@ load_dotenv()
 
 API_KEY = os.getenv("X_API_KEY")
 
+EXCLUDED_PATHS = {
+    "/auth/login",
+    "/auth/register",
+}
 
 async def api_key_middleware(request: Request, call_next):
+
+    if request.method == "OPTIONS":
+        return await call_next(request)
+
+    if request.url.path in EXCLUDED_PATHS:
+        return await call_next(request)
 
     if not API_KEY:
         return JSONResponse(
