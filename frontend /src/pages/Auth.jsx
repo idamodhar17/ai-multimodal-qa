@@ -55,7 +55,7 @@ const Auth = () => {
         </div>
         
         <p className="text-sm text-primary-foreground/50">
-          © 2024 DocuChat AI. All rights reserved.
+          © 2026 DocuChat AI. All rights reserved.
         </p>
       </div>
       
