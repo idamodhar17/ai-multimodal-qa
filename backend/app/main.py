@@ -1,5 +1,6 @@
 import os
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -19,6 +20,14 @@ app = FastAPI(title="DocuChat AI Multimodal Q&A API")
 
 # Database sync
 DB_SYNC = os.getenv("DB_SYNC", "false").lower() == "true"
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.on_event("startup")
 def on_startup():
