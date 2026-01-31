@@ -1,8 +1,11 @@
+const API_KEY = import.meta.env.VITE_API_KEY;
+
 export async function apiClient(
   url,
   { method = "GET", body, token, headers = {} } = {}
 ) {
   const finalHeaders = {
+    "x-api-key": API_KEY,
     ...headers,
   };
 
