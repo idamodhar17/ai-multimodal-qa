@@ -3,37 +3,29 @@ from app.services.vector_store import VectorStore
 from app.services.embedding_service import embed_texts
 from app.utils.logger import logger
 
-vector_store = None
+def load_index(db, file_id):
+    logger.info(f"Loading vector index for file {file_id}")
 
-def load_index(db):
-    global vector_store
-
-    logger.info("Loading chunks from database for vector index")
-
-    chunks = db.query(Chunk).all()
+    chunks = (
+        db.query(Chunk)
+        .filter(Chunk.file_id == file_id)
+        .all()
+    )
 
     if not chunks:
-        logger.warning("No chunks found in database")
-        vector_store = VectorStore(dim=0)
-        return vector_store
+        logger.warning(f"No chunks found for file {file_id}")
+        return None
 
     texts = [c.text for c in chunks]
     ids = [c.id for c in chunks]
 
-    logger.info(f"Generating embeddings for {len(texts)} chunks")
+    logger.info(f"Embedding {len(texts)} chunks")
 
     embeddings = embed_texts(texts)
 
     vector_store = VectorStore(dim=len(embeddings[0]))
     vector_store.add(embeddings, ids)
 
-    logger.info("Vector index created and populated")
-
-    for c, emb in zip(chunks, embeddings):
-        c.embedding = emb
-
-    db.commit()
-
-    logger.info("Embeddings saved to database")
+    logger.info(f"Vector index created for file {file_id}")
 
     return vector_store

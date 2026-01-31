@@ -21,6 +21,7 @@ app = FastAPI(title="DocuChat AI Multimodal Q&A API")
 # Database sync
 DB_SYNC = os.getenv("DB_SYNC", "false").lower() == "true"
 
+# CORS Middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

@@ -17,4 +17,3 @@ class Chunk(Base):
     text = Column(Text, nullable=False)
     start_time = Column(Float)
     end_time = Column(Float)
-    embedding = Column(ARRAY(SAFloat), nullable=True)

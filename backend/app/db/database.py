@@ -24,6 +24,10 @@ logger.info("Creating database engine")
 engine = create_engine(
     DATABASE_URL,
     pool_pre_ping=True,
+    pool_size=5,
+    max_overflow=10,
+    pool_recycle=1800,
+    connect_args={"sslmode": "require"},
 )
 
 logger.info("Database engine created successfully")
