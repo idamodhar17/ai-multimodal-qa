@@ -303,7 +303,9 @@ EMBEDDING_SETTINGS = {
 ### **Contact & Links**
 - GitHub: [@idamodhar17](https://github.com/idamodhar17)
 - LinkedIn: [Damodhar Zanwar](https://linkedin.com/in/damodhar-zanwar)
-
+- Drive: [Drive] (https://drive.google.com/drive/folders/1rzqgu6hBzziLkUO4RgIbhMecRJCsbNg0?usp=sharing) 
+- Vercel Link: [Vercel] (https://docuchat-ai-smoky.vercel.app) 
+- GitHub: [GitHub] (https://github.com/idamodhar17/ai-multimodal-qa) 
 ---
 
 ## ⭐ Support
